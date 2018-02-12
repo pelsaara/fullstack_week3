@@ -80,6 +80,10 @@ app.post('/api/persons', (req, res) => {
         return res.status(400).json({ error: 'Numero puuttuu' })
     }
 
+    if (persons.find(p => p.name === body.name)) {
+        return res.status(400).json({error: 'Tällä nimellä löytyy jo henkilö puhelinluettelosta'})
+    }
+
     const person = {
         name: body.name,
         number: body.number,
