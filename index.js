@@ -2,7 +2,9 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const cors = require('cors')
 
+app.use(cors())
 app.use(bodyParser.json())
 morgan.token('type', (req, res) => { return JSON.stringify(req.body)})
 app.use(morgan(':method :url :type :status :res[content-length] - :response-time ms'))
@@ -57,15 +59,11 @@ app.get('/api/persons/:id', (req, res) => {
 })
 
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(reqapp.post('/notes', (request, response) => {
-        const note = request.body
-        console.log(note)
-
-        response.json(note)
-    }).params.id)
+    const id = Number(req.params.id)
     persons = persons.filter(p => p.id !== id)
+  
     res.status(204).end()
-})
+  })
 
 const generateId = () => {
     const minId = persons.length > 0 ? persons.length + 1 : 1
@@ -75,11 +73,11 @@ const generateId = () => {
 app.post('/api/persons', (req, res) => {
     const body = req.body
 
-    if (body.name === undefined) {
+    if (body.name === "") {
         return res.status(400).json({ error: 'Nimi puuttuu' })
     }
 
-    if (body.number === undefined) {
+    if (body.number === "") {
         return res.status(400).json({ error: 'Numero puuttuu' })
     }
 
@@ -98,7 +96,7 @@ app.post('/api/persons', (req, res) => {
     res.json(person)
 })
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
